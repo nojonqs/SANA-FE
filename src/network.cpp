@@ -338,7 +338,7 @@ void sanafe::NeuronGroup::conv2d_create_kernel_connections(Neuron &dest,
 {
     for (int y_filter = 0; y_filter < convolution.kernel_height; ++y_filter)
     {
-        const int y_position = (out.y * convolution.stride_height) + y_filter;
+        const int y_position = (out.y * convolution.stride_height) - convolution.padding_height + y_filter;
         if (!conv2d_is_position_valid(y_position, convolution.input_height))
         {
             continue;
@@ -347,7 +347,7 @@ void sanafe::NeuronGroup::conv2d_create_kernel_connections(Neuron &dest,
         for (int x_filter = 0; x_filter < convolution.kernel_width; ++x_filter)
         {
             const int x_position =
-                    (out.x * convolution.stride_width) + x_filter;
+                    (out.x * convolution.stride_width) - convolution.padding_width + x_filter;
             if (!conv2d_is_position_valid(x_position, convolution.input_width))
             {
                 continue;
@@ -376,16 +376,14 @@ sanafe::Conv2DOutputDimensions sanafe::NeuronGroup::conv2d_calculate_dimensions(
     //  mapping layer inputs/outputs to the layer of neurons. We should support
     //  filter_channels_last and input_channels_last and output_channels_last
     //  separately, to be as flexible as possible. For now hard-code.
-    const int pad_width = 0;
-    const int pad_height = 0;
 
     Conv2DOutputDimensions dims{};
     // Standard convolution output size formula: (W - K + 2P) / S + 1"
-    dims.output_width = ((convolution.input_width + (2 * pad_width) -
+    dims.output_width = ((convolution.input_width + (2 * convolution.padding_width) -
                                  convolution.kernel_width) /
                                 convolution.stride_width) +
             1;
-    dims.output_height = ((convolution.input_height + (2 * pad_height) -
+    dims.output_height = ((convolution.input_height + (2 * convolution.padding_height) -
                                   convolution.kernel_height) /
                                  convolution.stride_height) +
             1;
@@ -444,11 +442,11 @@ sanafe::Conv2DIndices sanafe::NeuronGroup::conv2d_calculate_indices(
     indices.source_idx =
             pos.c_in * convolution.input_width * convolution.input_height;
     indices.source_idx +=
-            ((pos.output_coordinate.y * convolution.stride_height) +
+            ((pos.output_coordinate.y * convolution.stride_height) - convolution.padding_height + 
                     pos.y_filter) *
             convolution.input_width;
     indices.source_idx +=
-            ((pos.output_coordinate.x * convolution.stride_width) +
+            ((pos.output_coordinate.x * convolution.stride_width) - convolution.padding_width +
                     pos.x_filter);
 
     // Calculate filter index

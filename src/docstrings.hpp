@@ -122,6 +122,8 @@ Args:
     kernel_count (int, optional): Number of output channels/filters. Default is 1.
     stride_width (int, optional): Horizontal stride. Default is 1.
     stride_height (int, optional): Vertical stride. Default is 1.
+    padding_width (int, optional): Horizontal zero-padding on each side. Default is 0.
+    padding_height (int, optional): Vertical zero-padding on each side. Default is 0.
 
 Example:
     >>> # 28x28x1 -> 26x26x32 convolution (3x3 kernels)

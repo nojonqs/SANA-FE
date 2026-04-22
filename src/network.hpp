@@ -54,6 +54,8 @@ struct Conv2DParameters
     int kernel_count{1};
     int stride_width{1};
     int stride_height{1};
+    int padding_width{0};
+    int padding_height{0};
 };
 
 struct Conv2DCoordinate

@@ -633,6 +633,14 @@ bool sanafe::yaml_parse_conv2d_attribute(const std::string attribute_name,
     {
         convolution.stride_height = attribute;
     }
+    else if (attribute_name == "padding_width")
+    {
+        convolution.padding_width = attribute;
+    }
+    else if (attribute_name == "padding_height")
+    {
+        convolution.padding_height = attribute;
+    }
     else
     {
         parsed = false;
